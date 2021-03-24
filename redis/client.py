@@ -640,7 +640,7 @@ class Redis:
         'DEBUG OBJECT': parse_debug_object,
         'GEOHASH': lambda r: list(map(str_if_bytes, r)),
         'GEOPOS': lambda r: list(map(lambda ll: (float(ll[0]),
-                                     float(ll[1]))
+                                                 float(ll[1]))
                                      if ll is not None else None, r)),
         'GEORADIUS': parse_georadius_generic,
         'GEORADIUSBYMEMBER': parse_georadius_generic,
@@ -2022,9 +2022,9 @@ class Redis:
         "Return the length of the list ``name``"
         return self.execute_command('LLEN', name)
 
-    def lpop(self, name):
+    def lpop(self, name, count=1):
         "Remove and return the first item of the list ``name``"
-        return self.execute_command('LPOP', name)
+        return self.execute_command('LPOP', name, count)
 
     def lpush(self, name, *values):
         "Push ``values`` onto the head of the list ``name``"
@@ -2070,9 +2070,9 @@ class Redis:
         """
         return self.execute_command('LTRIM', name, start, end)
 
-    def rpop(self, name):
+    def rpop(self, name, count=1):
         "Remove and return the last item of the list ``name``"
-        return self.execute_command('RPOP', name)
+        return self.execute_command('RPOP', name, count)
 
     def rpoplpush(self, src, dst):
         """
@@ -4219,6 +4219,7 @@ class BitFieldOperation:
     """
     Command builder for BITFIELD commands.
     """
+
     def __init__(self, client, key, default_overflow=None):
         self.client = client
         self.key = key
